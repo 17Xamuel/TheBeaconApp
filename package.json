@@ -10,13 +10,9 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@freakycoder/react-native-helpers": "^1.0.2",
-    "@freakycoder/react-native-material-textfield": "^1.0.0",
     "react": "17.0.1",
     "react-native": "0.64.2",
-    "react-native-app-intro-slider": "^4.0.4",
-    "react-native-login-screen": "^2.1.4",
-    "react-native-spinkit": "^1.5.1"
+    "react-native-app-intro-slider": "^4.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
