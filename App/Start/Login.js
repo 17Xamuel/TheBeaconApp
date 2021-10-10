@@ -14,6 +14,9 @@ import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 //network
 import FormsApi from '../HttpHelper/post';
 
+//storage
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -26,13 +29,41 @@ class Login extends Component {
     });
   };
   post = async () => {
+    ToastAndroid.show('Please Wait...', ToastAndroid.SHORT);
+    if (this.state.username === '' || this.state.password === '') {
+      ToastAndroid.show('All Fields are Required...', ToastAndroid.LONG);
+      return;
+    }
     let data = {username: this.state.username, password: this.state.password};
     let api = new FormsApi();
-    let res = await api.post(`/user/student/new`, data);
+    let res = await api.post(`/user/student/login`, data);
     if (res !== 'Error') {
-      ToastAndroid.show('Inserted', ToastAndroid.LONG);
+      if (res.data === 'Error') {
+        ToastAndroid.show('An Error Occured', ToastAndroid.LONG);
+      } else if (res.data === 'Wrong_details') {
+        ToastAndroid.show('Wrong Username or Password', ToastAndroid.LONG);
+      } else {
+        ToastAndroid.show('Success, Redirecting...', ToastAndroid.LONG);
+        await AsyncStorage.setItem('user', JSON.stringify(res), error => {
+          if (error) {
+            Alert.alert('Error', 'An Error Occured, Start The App Again', [
+              {
+                text: 'Exit',
+                onPress: () => {
+                  BackHandler.exitApp();
+                },
+              },
+            ]);
+          } else {
+            this.props.navigation.navigate('Drawer');
+          }
+        });
+      }
     } else {
-      ToastAndroid.show('Failed To Insert', ToastAndroid.LONG);
+      ToastAndroid.show(
+        'An Error Occured, Check Your Internet...',
+        ToastAndroid.LONG,
+      );
     }
   };
   render() {
@@ -96,30 +127,34 @@ class Login extends Component {
             </Text>
             <FontAwesome5Icon name="chevron-right" size={18} color="#fff" />
           </TouchableOpacity>
-          <TouchableOpacity
+          <View
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
             }}>
-            <Text
-              style={{paddingRight: 5, paddingVertical: 5}}
-              onPress={() => {
-                this.props.navigation.navigate('register');
-              }}>
-              No Account? Register.
-            </Text>
-            <Text
-              style={{paddingRight: 5, paddingVertical: 5}}
-              onPress={() => {
-                Alert.alert(
-                  'In Process',
-                  'Forgot password is not functioning at the moment...',
-                );
-              }}>
-              Forgot Password?
-            </Text>
-          </TouchableOpacity>
+            <TouchableOpacity>
+              <Text
+                style={{paddingRight: 5, paddingVertical: 5}}
+                onPress={() => {
+                  this.props.navigation.navigate('Register');
+                }}>
+                No Account? Register.
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Text
+                style={{paddingRight: 5, paddingVertical: 5}}
+                onPress={() => {
+                  Alert.alert(
+                    'In Process',
+                    'Forgot password is not functioning at the moment...',
+                  );
+                }}>
+                Forgot Password?
+              </Text>
+            </TouchableOpacity>
+          </View>
         </Animatable.View>
       </View>
     );

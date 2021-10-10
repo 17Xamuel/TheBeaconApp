@@ -2,9 +2,6 @@ import React, {Component} from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 
-//next
-import Login from './Login';
-
 const slides = [
   {
     key: 1,
@@ -32,9 +29,7 @@ const slides = [
 class Onboard extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      showRealApp: false,
-    };
+    this.state = {};
   }
 
   _renderItem = ({item}) => {
@@ -48,29 +43,23 @@ class Onboard extends Component {
   };
 
   _onDone = () => {
-    // User finished the introduction. Show real app through
-    // navigation or simply by controlling state
-    this.setState({showRealApp: true});
+    this.props.navigation.navigate('Login');
   };
 
   onSkip = () => {
-    this.setState({showRealApp: true});
+    this.props.navigation.navigate('Login');
   };
 
   render() {
-    if (this.state.showRealApp) {
-      return <Login />;
-    } else {
-      return (
-        <AppIntroSlider
-          renderItem={this._renderItem}
-          data={slides}
-          onSkip={this.onSkip}
-          showSkipButton={true}
-          onDone={this._onDone}
-        />
-      );
-    }
+    return (
+      <AppIntroSlider
+        renderItem={this._renderItem}
+        data={slides}
+        onSkip={this.onSkip}
+        showSkipButton={true}
+        onDone={this._onDone}
+      />
+    );
   }
 }
 

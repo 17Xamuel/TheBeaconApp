@@ -1,13 +1,31 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  ToastAndroid,
+} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import {TextInput} from 'react-native-paper';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
+//network
+import FormsApi from '../HttpHelper/post';
+
+//storage
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 class Register extends Component {
   constructor(props) {
     super(props);
-    this.state = {passwordVisible: false, username: '', password: ''};
+    this.state = {
+      passwordVisible: false,
+      username: '',
+      password: '',
+      password_repeat: '',
+    };
   }
   togglePassword = () => {
     this.setState({
@@ -15,6 +33,54 @@ class Register extends Component {
       passwordVisible: !this.state.passwordVisible,
     });
   };
+
+  post = async () => {
+    ToastAndroid.show('Please Wait...', ToastAndroid.SHORT);
+    if (
+      this.state.username === '' ||
+      this.state.password === '' ||
+      this.state.password_repeat === ''
+    ) {
+      ToastAndroid.show('All Fields are Required...', ToastAndroid.LONG);
+      return;
+    }
+    if (this.state.password !== this.state.password_repeat) {
+      ToastAndroid.show("Passwords Don't Match...", ToastAndroid.LONG);
+      return;
+    }
+    let data = {username: this.state.username, password: this.state.password};
+    let api = new FormsApi();
+    let res = await api.post(`/user/student/new`, data);
+    if (res !== 'Error') {
+      if (res.data === 'Exits') {
+        ToastAndroid.show('Username Exits, Try Another...', ToastAndroid.LONG);
+      } else if (res.data === 'Error') {
+        ToastAndroid.show('Unable To Create Account', ToastAndroid.LONG);
+      } else {
+        ToastAndroid.show('Success, Account Created', ToastAndroid.LONG);
+        await AsyncStorage.setItem('user', JSON.stringify(res), error => {
+          if (error) {
+            Alert.alert('Error', 'An Error Occured, Start The App Again', [
+              {
+                text: 'Exit',
+                onPress: () => {
+                  BackHandler.exitApp();
+                },
+              },
+            ]);
+          } else {
+            this.props.navigation.navigate('Drawer');
+          }
+        });
+      }
+    } else {
+      ToastAndroid.show(
+        'An Error Occured, Check Your Internet',
+        ToastAndroid.LONG,
+      );
+    }
+  };
+
   render() {
     return (
       <View style={styles.container}>
@@ -34,7 +100,7 @@ class Register extends Component {
               color: '#fff',
               paddingHorizontal: 20,
             }}>
-            On The Beacon
+            For An Account
           </Text>
         </Animatable.View>
         <Animatable.View style={styles.login} animation="fadeInUpBig">
@@ -44,7 +110,7 @@ class Register extends Component {
               label="Username"
               mode="outlined"
               right={<TextInput.Icon name="account-circle-outline" />}
-              onChange={e => {
+              onChangeText={e => {
                 this.setState({...this.state, username: e});
               }}
             />
@@ -53,7 +119,7 @@ class Register extends Component {
               label="Password"
               mode="outlined"
               secureTextEntry={!this.state.passwordVisible}
-              onChange={e => {
+              onChangeText={e => {
                 this.setState({...this.state, password: e});
               }}
               right={
@@ -65,10 +131,10 @@ class Register extends Component {
             />
             <TextInput
               style={styles.input_ctr}
-              label="Password"
+              label="Repeat Password"
               mode="outlined"
               secureTextEntry={!this.state.passwordVisible}
-              onChange={e => {
+              onChangeText={e => {
                 this.setState({...this.state, password_repeat: e});
               }}
               right={
@@ -79,11 +145,7 @@ class Register extends Component {
               }
             />
           </View>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              Alert.alert('Data', JSON.stringify(this.state));
-            }}>
+          <TouchableOpacity style={styles.button} onPress={this.post}>
             <Text
               style={{
                 fontSize: 20,
@@ -104,9 +166,9 @@ class Register extends Component {
             <Text
               style={{paddingRight: 5, paddingVertical: 5}}
               onPress={() => {
-                this.props.navigation.navigate('register');
+                this.props.navigation.navigate('Login');
               }}>
-              No Account? Register.
+              Sign In Instead.
             </Text>
           </TouchableOpacity>
         </Animatable.View>
@@ -121,7 +183,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#009783',
   },
   login: {
-    flex: 4.5,
+    flex: 4,
     backgroundColor: '#fff',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
@@ -129,7 +191,7 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
   },
   welcome: {
-    flex: 1.5,
+    flex: 1,
     justifyContent: 'flex-end',
     paddingVertical: 15,
   },
