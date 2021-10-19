@@ -1,6 +1,5 @@
 import * as React from 'react';
-import {Text, View, StyleSheet, Button} from 'react-native';
-// import {BarCodeScanner} from 'expo-barcode-scanner';
+import {Text, View, StyleSheet, Button, Alert} from 'react-native';
 import {RNCamera} from 'react-native-camera';
 
 export default class BarcodeScanner extends React.Component {
@@ -24,7 +23,7 @@ export default class BarcodeScanner extends React.Component {
             ref={ref => {
               this.camera = ref;
             }}
-            onGoogleVisionBarcodesDetected={this.handleBarCodeScanned}
+            onBarCodeRead={this.handleBarCodeScanned}
             style={[StyleSheet.absoluteFill, styles.container]}>
             <View style={styles.layerTop} />
             <View style={styles.layerCenter}>
@@ -43,8 +42,14 @@ export default class BarcodeScanner extends React.Component {
     this.setState({
       scanned: true,
     });
-    // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
-    this.props.navigation.navigate('Attend', {data});
+    Alert.alert('Class Attended', `${data} Attended Class`, [
+      {
+        text: 'Ok',
+        onPress: () => {
+          this.props.navigation.navigate('Attend', {data});
+        },
+      },
+    ]);
   };
 }
 const opacity = 'rgba(0, 0, 0, .6)';

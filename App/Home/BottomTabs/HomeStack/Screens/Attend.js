@@ -8,6 +8,7 @@ import {
   Text,
   PermissionsAndroid,
   View,
+  Alert,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
 // import * as Animatable from 'react-native-animatable';
@@ -26,42 +27,19 @@ class Attend extends Component {
       hasCameraPermission: null,
     };
   }
-  componentDidMount = async () => {
-    // this.getPermissionsAsync();
-    console.log(this.props.route.params.data);
-    if (this.props.route.params.data != null) {
-      alert(`Scanned Data: ${this.props.route.params.data}`);
-    }
-  };
-  handleQR = () => {
-    // if (this.state.hasCameraPermission === null) {
-    //   alert('Scan QR Code requests for your Camera Permission');
-    // }
-    // if (this.state.hasCameraPermission === false) {
-    //   alert('Scan QR Code requests for your Permission');
-    // }
-    // if (this.state.hasCameraPermission === true) {
-    this.props.navigation.navigate('QrCode', {hasCameraPermission: true});
-    // }
-  };
-  // getPermissionsAsync = async () => {
-  //   try {
-  //     const granted = await PermissionsAndroid.request(
-  //       PermissionsAndroid.PERMISSIONS.CAMERA,
-  //     );
-  //     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-  //       this.setState({
-  //         hasCameraPermission: true,
-  //       });
-  //     } else {
-  //       this.setState({
-  //         hasCameraPermission: false,
-  //       });
-  //     }
-  //   } catch (err) {
-  //     console.warn(err);
+  // componentDidMount = async () => {
+  //   console.log(this.props.route.params.data);
+  //   if (this.props.route.params.data != null) {
+  //     alert(`Scanned Data: ${this.props.route.params.data}`);
   //   }
   // };
+  handleQR = () => {
+    Alert.alert('Confirm', 'FingerPrint Auth, Touch your Sensor', [
+      {text: 'Cancel', onPress: () => {}, style: 'destructive'},
+      {text: 'ok', onPress: () => {}},
+    ]);
+    // this.props.navigation.navigate('QrCode', {hasCameraPermission: true});
+  };
   render() {
     return (
       <SafeAreaView style={{flex: 1}}>
@@ -88,7 +66,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 5,
     marginHorizontal: Dimensions.get('window').width * 0.05,
-    marginVertical: Dimensions.get('window').width * 0.05,
+    marginVertical: Dimensions.get('window').height * 0.05,
     justifyContent: 'space-around',
     height: Dimensions.get('window').height * 0.7,
     shadowColor: 'rgba(0,0,0,0.1)',
