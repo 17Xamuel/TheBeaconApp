@@ -12,6 +12,10 @@ target 'TheBeacon' do
     :hermes_enabled => false
   )
 
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+
+  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+
   target 'TheBeaconTests' do
     inherit! :complete
     # Pods for testing

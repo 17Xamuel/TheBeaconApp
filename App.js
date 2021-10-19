@@ -1,12 +1,13 @@
+import 'react-native-gesture-handler';
 import React, {Component} from 'react';
-import {BackHandler, Text, View, Alert} from 'react-native';
+import {BackHandler, Text, View, Alert, ActivityIndicator} from 'react-native';
 
 //storage
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //start stacks
 import StartStack from './App/Start/StartStack';
-import Drawer from './App/Home/Drawer/Drawer';
+import DrawerStack from './App/Home/Drawer/DrawerStack';
 import {NavigationContainer} from '@react-navigation/native';
 
 class App extends Component {
@@ -57,7 +58,7 @@ const AppContent = ({start}) => {
   if (start === 'user') {
     return (
       <NavigationContainer>
-        <Drawer />
+        <DrawerStack />
       </NavigationContainer>
     );
   } else {
@@ -78,6 +79,9 @@ const Splash = () => {
         alignItems: 'center',
         justifyContent: 'center',
       }}>
+      <View style={{margin: 2}}>
+        <ActivityIndicator size="large" />
+      </View>
       <Text style={{fontSize: 20}}>Loading App...</Text>
     </View>
   );

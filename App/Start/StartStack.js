@@ -9,7 +9,7 @@ import Onboard from './Onboard';
 import Register from './Register';
 
 //Big nav
-import Drawer from '../Home/Drawer/Drawer';
+import Drawer from '../Home/Drawer/DrawerStack';
 
 const Stack = createStackNavigator();
 function StartStack() {
