@@ -1,5 +1,11 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Alert,
+} from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -17,6 +23,7 @@ class Camera extends Component {
     textBlocks.forEach(textBlock => {
       str += textBlock.value;
     });
+    Alert.alert('Data scanned', str.substring(0, 40), [{text: 'ok'}]);
   };
   render() {
     return (

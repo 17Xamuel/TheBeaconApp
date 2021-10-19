@@ -11,6 +11,7 @@ import {
   Alert,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 // import * as Animatable from 'react-native-animatable';
 // import Feather from 'react-native-vector-icons/Feather';
 // import {Camera} from 'expo-camera';
@@ -34,10 +35,15 @@ class Attend extends Component {
   //   }
   // };
   handleQR = () => {
-    Alert.alert('Confirm', 'FingerPrint Auth, Touch your Sensor', [
-      {text: 'Cancel', onPress: () => {}, style: 'destructive'},
-      {text: 'ok', onPress: () => {}},
-    ]);
+    FingerprintScanner.authenticate({title: 'Confirm With biometrics'}).then(
+      () => {
+        this.props.navigation.navigate('QrCode', {hasCameraPermission: true});
+      },
+    );
+    // Alert.alert('Confirm', 'FingerPrint Auth, Touch your Sensor', [
+    //   {text: 'Cancel', onPress: () => {}, style: 'destructive'},
+    //   {text: 'ok', onPress: () => {}},
+    // ]);
     // this.props.navigation.navigate('QrCode', {hasCameraPermission: true});
   };
   render() {
